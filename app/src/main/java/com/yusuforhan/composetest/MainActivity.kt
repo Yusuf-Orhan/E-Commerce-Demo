@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -172,6 +173,19 @@ fun MainScreen(
                 }
 
             }
+            Row (
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "Featured Product", fontFamily = FontFamily(Font(R.font.dmsans)),color = DarkBlue, fontSize = 16.sp, modifier = modifier.padding(15.dp))
+                Text(text = "See all", fontFamily = FontFamily(Font(R.font.dmsans)),color = TitleColor, fontSize = 12.sp, modifier = modifier.padding(top = 20.dp, end = 15.dp))
+            }
+            LazyColumn{
+                item {
+
+                }
+            }
+
         }
     }
 }
