@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,17 +16,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,17 +49,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.toColor
 import com.yusuforhan.composetest.ui.theme.ComposeTestTheme
 import com.yusuforhan.composetest.ui.theme.DarkBlue
 import com.yusuforhan.composetest.ui.theme.HalfGrey
 import com.yusuforhan.composetest.ui.theme.TitleColor
-import java.nio.file.WatchEvent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,6 +137,7 @@ fun MainScreen(
                 .padding(it)
                 .fillMaxSize()
                 .background(Color.White)
+                .verticalScroll(state = rememberScrollState())
         ) {
             SearchBar()
             LazyRow(content = {
@@ -181,7 +181,6 @@ fun MainScreen(
 
             }
             LazyRow {
-
                 items(categoryList.size) {
                     val model = categoryList[it]
                     Column {
@@ -236,12 +235,9 @@ fun MainScreen(
                     modifier = modifier.padding(top = 20.dp, end = 15.dp)
                 )
             }
-            LazyColumn {
-                items(productList.size) {position ->
-                    ProductItem(productModel = productList[position])
-                }
+            productList.forEach {
+                ProductItem(productModel = it)
             }
-
         }
     }
 }
@@ -279,19 +275,49 @@ fun ProductItem(
     modifier: Modifier = Modifier,
     productModel: ProductModel
 ) {
-    ElevatedCard(
-        modifier = modifier.fillMaxSize(),
+    Card(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 10.dp
         )
     ) {
-        Column {
-            Image(painter = painterResource(id = productModel.image), contentDescription = null,modifier = modifier.size(125.dp))
-            Text(text = productModel.title, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold))
-            Row {
-                Icon(imageVector = Icons.Default.Star, contentDescription = null, tint = Color.Yellow)
-                Text(text = productModel.rate.toString(), style = TextStyle(fontSize = 14.sp))
-                Text(text = "${productModel.reviewSize} Reviews")
+        Column(
+            modifier = modifier.padding(5.dp)
+        ) {
+            Image(
+                painter = painterResource(id = productModel.image),
+                contentDescription = null,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            )
+            Text(
+                text = productModel.title,
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                modifier = modifier.padding(3.dp)
+            )
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        tint = Color.Yellow
+                    )
+                    Text(
+                        text = productModel.rate.toString(),
+                        style = TextStyle(fontSize = 14.sp),
+                        modifier = modifier.padding(3.dp)
+                    )
+                }
+                Text(text = "${productModel.reviewSize} Reviews", modifier = modifier.padding(3.dp))
             }
         }
     }
